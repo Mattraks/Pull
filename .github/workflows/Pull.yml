@@ -1,0 +1,79 @@
+name: Pull-upstream
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 00 */1 * * *
+  push:
+jobs:
+  autosync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Delete workflow runs
+      continue-on-error: true
+      uses: Mattraks/delete-workflow-runs@v2
+      with:
+        retain_days: 0
+        keep_minimum_runs: 5
+    - name: lede
+      continue-on-error: true
+      uses: TobKed/github-forks-sync-action@master
+      with:
+        github_token: ${{ secrets.access_token }}
+        upstream_repository: coolsnowwolf/lede
+        target_repository: Mattraks/lean-lede
+        force: true
+    - name: luci
+      continue-on-error: true
+      uses: TobKed/github-forks-sync-action@master
+      with:
+        github_token: ${{ secrets.access_token }}
+        upstream_repository: coolsnowwolf/luci
+        target_repository: Mattraks/lean-lede
+        upstream_branch: master
+        target_branch: luci
+        force: true
+    - name: packages
+      continue-on-error: true
+      uses: TobKed/github-forks-sync-action@master
+      with:
+        github_token: ${{ secrets.access_token }}
+        upstream_repository: coolsnowwolf/packages
+        target_repository: Mattraks/lean-lede
+        target_branch: packages
+        force: true
+    - name: lede-sync
+      continue-on-error: true
+      uses: TobKed/github-forks-sync-action@master
+      with:
+        github_token: ${{ secrets.access_token }}
+        upstream_repository: coolsnowwolf/lede
+        target_repository: Mattraks/lede
+        force: true
+    - name: helloworld-sync
+      continue-on-error: true
+      uses: TobKed/github-forks-sync-action@master
+      with:
+        github_token: ${{ secrets.access_token }}
+        upstream_repository: fw876/helloworld
+        target_repository: Mattraks/helloworld
+        force: true
+    - name: openwrt-passwall-sync
+      continue-on-error: true
+      uses: TobKed/github-forks-sync-action@master
+      with:
+        github_token: ${{ secrets.access_token }}
+        upstream_repository: Mattraks/openwrt-passwall
+        target_repository: Mattraks/openwrt-passwall
+        upstream_branch: luci
+        target_branch: luci
+        force: true
+    - name: openwrt-passwall-sync
+      continue-on-error: true
+      uses: TobKed/github-forks-sync-action@master
+      with:
+        github_token: ${{ secrets.access_token }}
+        upstream_repository: Mattraks/openwrt-passwall
+        target_repository: Mattraks/openwrt-passwall
+        upstream_branch: packages
+        target_branch: packages
+        force: true
